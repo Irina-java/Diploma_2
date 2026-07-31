@@ -1,0 +1,27 @@
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+
+### macOS ###
+.DS_Store
+
+### Local Allure installation ###
+.allure/
+
+### Maven build files ###
+target/*
+
+### Keep Allure results and reports ###
+!target/allure-results/
+!target/allure-results/**
+
+!target/allure-report-chrome/
+!target/allure-report-chrome/**
+
+!target/allure-report-yandex/
+!target/allure-report-yandex/**
+
+### Logs ###
+*.log
