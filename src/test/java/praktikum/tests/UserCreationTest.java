@@ -1,0 +1,97 @@
+package praktikum.tests;
+
+import io.restassured.response.Response;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import praktikum.client.UserClient;
+import praktikum.model.User;
+import praktikum.utils.UserGenerator;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
+
+public class UserCreationTest {
+    private UserClient userClient;
+    private User user;
+    private String accessToken;
+
+    @Before
+    public void setUp() {
+        userClient = new UserClient();
+        user = UserGenerator.getRandomUser();
+    }
+
+    @After
+    public void tearDown() {
+        if (accessToken != null) {
+            userClient.delete(accessToken);
+        }
+    }
+
+    //Создание уникального пользователя
+    @Test
+    public void createUniqueUserReturnsSuccess() {
+        Response response = userClient.create(user);
+
+        response.then()
+                .statusCode(200)
+                .body("success", equalTo(true))
+                .body("accessToken", notNullValue());
+
+        accessToken = response.path("accessToken");
+    }
+
+    //Создания пользователя который уже зарегестрировался
+    @Test
+    public void createExistingUserReturnError() {
+        Response firstResponse = userClient.create(user);
+        accessToken = firstResponse.path("accessToken");
+
+        Response secondResponse = userClient.create((user));
+
+        secondResponse.then()
+                .statusCode(403)
+                .body("success", equalTo(false))
+                .body("message", equalTo("User already exists"));
+    }
+
+    //Создание пользователя без обязательного поля "email"
+    @Test
+    public void createUserWithoutEmailReturnsError() {
+        User userWithoutEmail = new User(null, user.getPassword(), user.getName());
+
+        Response response = userClient.create(userWithoutEmail);
+
+        response.then()
+                .statusCode(403)
+                .body("success", equalTo(false))
+                .body("message", equalTo("Email, password and name are required fields"));
+    }
+
+    //Создание пользователя без обязательного поля "password"
+    @Test
+    public void createUserWithoutPasswordReturnsError() {
+        User userWithoutPassword = new User(user.getEmail(), null, user.getName());
+
+        Response response = userClient.create(userWithoutPassword);
+
+        response.then()
+                .statusCode(403)
+                .body("success", equalTo(false))
+                .body("message", equalTo("Email, password and name are required fields"));
+    }
+
+    //Создание пользователя без обязательного поля "name"
+    @Test
+    public void createUserWithoutNameReturnsError() {
+        User userWithoutName = new User(user.getEmail(), user.getPassword(), null);
+
+        Response response = userClient.create(userWithoutName);
+
+        response.then()
+                .statusCode(403)
+                .body("success", equalTo(false))
+                .body("message", equalTo("Email, password and name are required fields"));
+    }
+
+}
