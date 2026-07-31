@@ -9,6 +9,7 @@
 
 ### Local Allure installation ###
 .allure/
+allure-results/
 
 ### Maven build files ###
 target/*
@@ -17,11 +18,8 @@ target/*
 !target/allure-results/
 !target/allure-results/**
 
-!target/allure-report-chrome/
-!target/allure-report-chrome/**
-
-!target/allure-report-yandex/
-!target/allure-report-yandex/**
+!target/allure-report/
+!target/allure-report/**
 
 ### Logs ###
 *.log
