@@ -9,6 +9,8 @@ import praktikum.model.User;
 import praktikum.utils.UserGenerator;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
+import io.qameta.allure.Description;
+import io.qameta.allure.junit4.DisplayName;
 
 public class UserCreationTest {
     private UserClient userClient;
@@ -30,6 +32,8 @@ public class UserCreationTest {
 
     //Создание уникального пользователя
     @Test
+    @DisplayName("Создание уникального пользователя")
+    @Description("Проверка успешного создания пользователя с валидными данными")
     public void createUniqueUserReturnsSuccess() {
         Response response = userClient.create(user);
 
@@ -43,6 +47,8 @@ public class UserCreationTest {
 
     //Создания пользователя который уже зарегестрировался
     @Test
+    @DisplayName("Создание уже существующего пользователя")
+    @Description("Проверка невозможности повторного создания пользователя с уже зарегестрированными данными")
     public void createExistingUserReturnError() {
         Response firstResponse = userClient.create(user);
         accessToken = firstResponse.path("accessToken");
@@ -57,6 +63,8 @@ public class UserCreationTest {
 
     //Создание пользователя без обязательного поля "email"
     @Test
+    @DisplayName("Создание пользователя без email")
+    @Description("Проверка невозможности создания пользователя без обязательного поля email")
     public void createUserWithoutEmailReturnsError() {
         User userWithoutEmail = new User(null, user.getPassword(), user.getName());
 
@@ -70,6 +78,8 @@ public class UserCreationTest {
 
     //Создание пользователя без обязательного поля "password"
     @Test
+    @DisplayName("Создание пользователя без пароля")
+    @Description("Проверка невозможности создания пользователя без обязательного поля password")
     public void createUserWithoutPasswordReturnsError() {
         User userWithoutPassword = new User(user.getEmail(), null, user.getName());
 
@@ -83,6 +93,8 @@ public class UserCreationTest {
 
     //Создание пользователя без обязательного поля "name"
     @Test
+    @DisplayName("Создание пользователя без имени")
+    @Description("Проверка невозможности создания пользователя без обязательного поля name")
     public void createUserWithoutNameReturnsError() {
         User userWithoutName = new User(user.getEmail(), user.getPassword(), null);
 

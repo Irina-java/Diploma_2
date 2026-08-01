@@ -12,6 +12,8 @@ import praktikum.utils.UserGenerator;
 import java.util.List;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
+import io.qameta.allure.Description;
+import io.qameta.allure.junit4.DisplayName;
 
 public class OrderCreationTest {
     private OrderClient orderClient;
@@ -23,7 +25,9 @@ public class OrderCreationTest {
 
     //Создание заказа без авторизации с ингредиентами
     @Test
-    public void createOrderWithoutAuthorizationWithIngredientsReturnsSuccess() {
+    @DisplayName("Создание заказа без авторизации с ингредиентами")
+    @Description("Проверка успешного создания заказа без авторизации припередачи корректных ингредиентов")
+    public void createOrderWithAuthorizationReturnsSuccess() {
         Order order = new Order(List.of("61c0c5a71d1f82001bdaaa6d", "61c0c5a71d1f82001bdaaa70"));
 
         Response response = orderClient.create(order);
@@ -36,6 +40,8 @@ public class OrderCreationTest {
 
     //Создание заказа с авторизацией и с ингредиентами
     @Test
+    @DisplayName("Создание заказа с авторизацией и ингредиентами")
+    @Description("Проверка успешного создание заказа авторизированным пользователем припередачи корректных ингредиентов")
     public void createOrderWithoutAuthorizationReturnsSuccess() {
         UserClient userClient = new UserClient();
 
@@ -57,6 +63,8 @@ public class OrderCreationTest {
 
     //Создание заказа без ингредиентов
     @Test
+    @DisplayName("Сщздание заказа без ингредиентов")
+    @Description("Проверка ошибки отобоажения при создании заказа без передачи ингредиентов")
     public void createOrderWithoutIngredientsReturnsError() {
         Order order = new Order(List.of());
 
@@ -70,6 +78,8 @@ public class OrderCreationTest {
 
     //Создание заказа с неверным хешем
     @Test
+    @DisplayName("Сщздание заказа с некорректны хешем ингредиента")
+    @Description("Проверка обработки запроса при передачи некорректного хеша ингредиента")
     public void createOrderWithIncorrectIngredientHashReturnsError() {
         Order order = new Order(List.of("incorrectIngredientHash"));
 

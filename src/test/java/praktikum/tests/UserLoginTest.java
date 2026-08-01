@@ -11,6 +11,8 @@ import praktikum.model.UserCredentials;
 import praktikum.utils.UserGenerator;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
+import io.qameta.allure.Description;
+import io.qameta.allure.junit4.DisplayName;
 
 public class UserLoginTest {
     private UserClient userClient;
@@ -35,6 +37,8 @@ public class UserLoginTest {
 
     //Вход под существующим пользователем
     @Test
+    @DisplayName("Авторизация существующего пользователя")
+    @Description("Проверка успешной авторизации пользователя с валидными даннми")
     public void loginExistingUserReturnSuccess() {
         UserCredentials credentials = new UserCredentials(user.getEmail(), user.getPassword());
 
@@ -48,6 +52,8 @@ public class UserLoginTest {
 
     //Вход с неверным логином и паролем
     @Test
+    @DisplayName("Авторизация с неверными учетными данными")
+    @Description("Проверка невозможности автооризации пользователя при передачи неверного email и password")
     public void loginWithIncorrectCredentialsReturnsError() {
         UserCredentials incorrectCredentials = new UserCredentials("wrongEmail@mail.ru", "wrongPassword");
 
