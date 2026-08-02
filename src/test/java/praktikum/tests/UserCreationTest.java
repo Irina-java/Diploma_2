@@ -11,6 +11,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
+import static org.apache.http.HttpStatus.*;
 
 public class UserCreationTest {
     private UserClient userClient;
@@ -38,7 +39,7 @@ public class UserCreationTest {
         Response response = userClient.create(user);
 
         response.then()
-                .statusCode(200)
+                .statusCode(SC_OK)
                 .body("success", equalTo(true))
                 .body("accessToken", notNullValue());
 
@@ -56,7 +57,7 @@ public class UserCreationTest {
         Response secondResponse = userClient.create((user));
 
         secondResponse.then()
-                .statusCode(403)
+                .statusCode(SC_FORBIDDEN)
                 .body("success", equalTo(false))
                 .body("message", equalTo("User already exists"));
     }
@@ -71,7 +72,7 @@ public class UserCreationTest {
         Response response = userClient.create(userWithoutEmail);
 
         response.then()
-                .statusCode(403)
+                .statusCode(SC_FORBIDDEN)
                 .body("success", equalTo(false))
                 .body("message", equalTo("Email, password and name are required fields"));
     }
@@ -86,7 +87,7 @@ public class UserCreationTest {
         Response response = userClient.create(userWithoutPassword);
 
         response.then()
-                .statusCode(403)
+                .statusCode(SC_FORBIDDEN)
                 .body("success", equalTo(false))
                 .body("message", equalTo("Email, password and name are required fields"));
     }
@@ -101,7 +102,7 @@ public class UserCreationTest {
         Response response = userClient.create(userWithoutName);
 
         response.then()
-                .statusCode(403)
+                .statusCode(SC_FORBIDDEN)
                 .body("success", equalTo(false))
                 .body("message", equalTo("Email, password and name are required fields"));
     }

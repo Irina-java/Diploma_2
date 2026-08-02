@@ -1,7 +1,6 @@
 package praktikum.tests;
 
 import io.restassured.response.Response;
-import org.apache.http.auth.Credentials;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +12,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
+import static org.apache.http.HttpStatus.*;
 
 public class UserLoginTest {
     private UserClient userClient;
@@ -25,7 +25,7 @@ public class UserLoginTest {
         user = UserGenerator.getRandomUser();
 
         Response createResponse = userClient.create(user);
-        accessToken = createResponse.path("accessTocen");
+        accessToken = createResponse.path("accessToken");
     }
 
     @After
@@ -45,23 +45,39 @@ public class UserLoginTest {
         Response response = userClient.login(credentials);
 
         response.then()
-                .statusCode(200)
+                .statusCode(SC_OK)
                 .body("success", equalTo(true))
                 .body("accessToken", notNullValue());
     }
 
-    //Вход с неверным логином и паролем
+    //Вход с неверным логином
     @Test
-    @DisplayName("Авторизация с неверными учетными данными")
-    @Description("Проверка невозможности автооризации пользователя при передачи неверного email и password")
-    public void loginWithIncorrectCredentialsReturnsError() {
-        UserCredentials incorrectCredentials = new UserCredentials("wrongEmail@mail.ru", "wrongPassword");
+    @DisplayName("Авторизация с неверным логином")
+    @Description("Проверка невозможности авторизации пользователя при передачи неверного email")
+    public void loginWithIncorrectEmailReturnsError() {
+        UserCredentials incorrectCredentials = new UserCredentials("wrongEmail@mail.ru", user.getPassword());
 
         Response response = userClient.login(incorrectCredentials);
 
         response.then()
-                .statusCode(401)
-                .body("success", equalTo(false))
-                .body("message", equalTo("email or password are incorrect"));
+                .statusCode(SC_UNAUTHORIZED)
+                .body("success", equalTo(false));
+
     }
+
+    //Вход с неверным логином
+    @Test
+    @DisplayName("Авторизация с неверным паролем")
+    @Description("Проверка невозможности авторизации пользователя при передачи неверного password")
+    public void loginWithIncorrectPasswordReturnsError() {
+        UserCredentials incorrectCredentials = new UserCredentials(user.getEmail(), "wrongPassword");
+
+        Response response = userClient.login(incorrectCredentials);
+
+        response.then()
+                .statusCode(SC_UNAUTHORIZED)
+                .body("success", equalTo(false));
+
+    }
+
 }

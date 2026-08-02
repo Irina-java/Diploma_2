@@ -14,6 +14,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
+import static org.apache.http.HttpStatus.*;
 
 public class OrderCreationTest {
     private OrderClient orderClient;
@@ -33,7 +34,7 @@ public class OrderCreationTest {
         Response response = orderClient.create(order);
 
         response.then()
-                .statusCode(200)
+                .statusCode(SC_OK)
                 .body("success", equalTo(true))
                 .body("order.number", notNullValue());
     }
@@ -54,7 +55,7 @@ public class OrderCreationTest {
          Response response = orderClient.createWithAuthorization(order, accessToken);
 
          response.then()
-                 .statusCode(200)
+                 .statusCode(SC_OK)
                  .body("success", equalTo(true))
                  .body("order.number", notNullValue());
 
@@ -63,7 +64,7 @@ public class OrderCreationTest {
 
     //Создание заказа без ингредиентов
     @Test
-    @DisplayName("Сщздание заказа без ингредиентов")
+    @DisplayName("Создание заказа без ингредиентов")
     @Description("Проверка ошибки отобоажения при создании заказа без передачи ингредиентов")
     public void createOrderWithoutIngredientsReturnsError() {
         Order order = new Order(List.of());
@@ -71,21 +72,21 @@ public class OrderCreationTest {
         Response response = orderClient.create(order);
 
         response.then()
-                .statusCode(400)
+                .statusCode(SC_BAD_REQUEST)
                 .body("success", equalTo(false))
                 .body("message", equalTo("Ingredient ids must be provided"));
     }
 
     //Создание заказа с неверным хешем
     @Test
-    @DisplayName("Сщздание заказа с некорректны хешем ингредиента")
+    @DisplayName("Содание заказа с некорректны хешем ингредиента")
     @Description("Проверка обработки запроса при передачи некорректного хеша ингредиента")
     public void createOrderWithIncorrectIngredientHashReturnsError() {
         Order order = new Order(List.of("incorrectIngredientHash"));
 
         Response response = orderClient.create(order);
         response.then()
-                .statusCode(500);
+                .statusCode(SC_INTERNAL_SERVER_ERROR);
 
     }
 }
